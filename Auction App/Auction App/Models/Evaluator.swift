@@ -11,6 +11,7 @@ class Evaluator {
     
     private var greaterOfAll = Double.leastNonzeroMagnitude
     private var leasterOfAll = Double.greatestFiniteMagnitude
+    private var biggests: [Throw] = []
     
     func evaluate(auction: Auction) {
         guard let allThrows = auction.throwsOfAuction else { return }
@@ -23,6 +24,8 @@ class Evaluator {
                 leasterOfAll = currentThrow.value
             }
         }
+        
+        getBiggerThrowsOnAuction(auction)
     }
     
     func greaterThrow() -> Double {
@@ -31,6 +34,21 @@ class Evaluator {
     
     func leastThrow() -> Double {
         return leasterOfAll
+    }
+    
+    func threeBiggest() -> [Throw] {
+        return biggests
+    }
+    
+    private func getBiggerThrowsOnAuction(_ auction: Auction) {
+        guard let allThrows = auction.throwsOfAuction else { return }
+        
+        biggests = allThrows.sorted(by: { (list1, list2) -> Bool in
+            return list1.value > list2.value
+        })
+        
+        let biggestThrows = biggests.prefix(3)
+        biggests = Array(biggestThrows)
     }
     
 }
