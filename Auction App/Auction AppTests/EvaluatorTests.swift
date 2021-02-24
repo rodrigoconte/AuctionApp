@@ -36,6 +36,20 @@ class EvaluatorTests: XCTestCase {
         
         XCTAssertEqual(smaller, auctioner.leastThrow())
         XCTAssertEqual(bigger, auctioner.greaterThrow())
+        
+    }
+    
+    func testCouldUndestandAuctionWithJustOneThrow() {
+        
+        let user1 = User(id: 1, name: "User 1")
+        let auction = Auction(description: "Playstation 5")
+        auction.purpose(value: Throw(user1, 550.00))
+        
+        let auctioner = Evaluator()
+        auctioner.evaluate(auction: auction)
+        
+        XCTAssertEqual(auctioner.greaterThrow(), auctioner.leastThrow())
+        
     }
 
 }
