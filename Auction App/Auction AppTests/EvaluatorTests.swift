@@ -51,5 +51,28 @@ class EvaluatorTests: XCTestCase {
         XCTAssertEqual(auctioner.greaterThrow(), auctioner.leastThrow())
         
     }
+    
+    func testCouldFindThreeBiggestThrows() {
+        let user1 = User(id: 1, name: "User One")
+        let user2 = User(id: 2, name: "User Two")
+        let user3 = User(id: 3, name: "User Three")
+        
+        let auction = Auction(description: "Playstation 5")
+        auction.purpose(value: Throw(user1, 250.00))
+        auction.purpose(value: Throw(user2, 300.00))
+        auction.purpose(value: Throw(user3, 400.00))
+        auction.purpose(value: Throw(user1, 600.00))
+        
+        let auctioner = Evaluator()
+        auctioner.evaluate(auction: auction)
+        
+        let throwsList = auctioner.threeBiggest()
+        
+        XCTAssertEqual(3, throwsList.count)
+        XCTAssertEqual(600, throwsList[0].value)
+        XCTAssertEqual(400, throwsList[1].value)
+        XCTAssertEqual(300, throwsList[2].value)
+        
+    }
 
 }
