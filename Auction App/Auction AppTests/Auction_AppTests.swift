@@ -11,23 +11,36 @@ import XCTest
 class Auction_AppTests: XCTestCase {
 
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    
+    func testMustReceiveOneBid() {
+        let auction = Auction(description: "MacbookPro 15")
+        XCTAssertEqual(0, auction.throwsOfAuction?.count)
+        
+        let userOne = User(name: "User One")
+        auction.purpose(value: Throw(userOne, 2000.0))
+        
+        XCTAssertEqual(1, auction.throwsOfAuction?.count)
+        XCTAssertEqual(2000.0, auction.throwsOfAuction?.first?.value)
+        
     }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    
+    func testMustReceiveMultipleBids() {
+        let auction = Auction(description: "Xbox Series X")
+        XCTAssertEqual(0, auction.throwsOfAuction?.count)
+        
+        let userOne = User(name: "User One")
+        auction.purpose(value: Throw(userOne, 2000.00))
+        
+        let userTwo = User(name: "User Two")
+        auction.purpose(value: Throw(userTwo, 3000.00))
+        
+        XCTAssertEqual(2, auction.throwsOfAuction?.count)
+        XCTAssertEqual(2000.00, auction.throwsOfAuction?.first?.value)
+        XCTAssertEqual(3000.00, auction.throwsOfAuction?[1].value)
     }
 
 }
