@@ -42,5 +42,17 @@ class Auction_AppTests: XCTestCase {
         XCTAssertEqual(2000.00, auction.throwsOfAuction?.first?.value)
         XCTAssertEqual(3000.00, auction.throwsOfAuction?[1].value)
     }
+    
+    func testMustIgnoreTwoBidsConsecutiveFromSameUser() {
+        let auction = Auction(description: "Some samsung phone")
+        XCTAssertEqual(0, auction.throwsOfAuction?.count)
+        
+        let userOne = User(name: "User One")
+        auction.purpose(value: Throw(userOne, 2000.00))
+        auction.purpose(value: Throw(userOne, 3000.00))
+        
+        XCTAssertEqual(1, auction.throwsOfAuction?.count)
+        XCTAssertEqual(2000.0, auction.throwsOfAuction?.first?.value)
+    }
 
 }
