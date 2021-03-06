@@ -17,3 +17,13 @@ class User {
         self.name = name
     }
 }
+
+extension User: Equatable {
+    static func == (lhs: User, rhs: User) -> Bool {
+        if lhs.id != rhs.id || lhs.name != rhs.name {
+            return false
+        } else {
+            return true
+        }
+    }
+}
