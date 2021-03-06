@@ -10,61 +10,60 @@ import XCTest
 @testable import Auction_App
 
 class EvaluatorTests: XCTestCase {
-
+    
+    private var userOne: User!
+    private var userTwo: User!
+    private var userThree: User!
+    private var auctioner: Evaluator!
+    
+    override func setUp() {
+        super.setUp()
+        initUsers()
+        initEvaluator()
+    }
+    
     override func setUpWithError() throws {
     }
-
+    
     override func tearDownWithError() throws {
     }
     
     func testCouldUnderstandThrowsInGrowingOrder() {
         
-        let user1 = User(id: 1, name: "User One")
-        let user2 = User(id: 2, name: "User Two")
-        let user3 = User(id: 3, name: "User Three")
+        let auction = AuctionCreator()
+            .to(description: "Playstation 5")
+            .bid(userOne, 250.00)
+            .bid(userTwo, 300.00)
+            .bid(userThree, 400.00)
+            .construct()
         
-        let auction = Auction(description: "Playstation 5")
-        auction.purpose(value: Throw(user1, 250.00))
-        auction.purpose(value: Throw(user2, 300.00))
-        auction.purpose(value: Throw(user3, 400.00))
-        
-        let auctioner = Evaluator()
-        auctioner.evaluate(auction: auction)
+        try? auctioner.evaluate(auction: auction)
         
         let bigger = 400.00
         let smaller = 250.00
         
         XCTAssertEqual(smaller, auctioner.leastThrow())
         XCTAssertEqual(bigger, auctioner.greaterThrow())
-        
     }
     
     func testCouldUndestandAuctionWithJustOneThrow() {
-        
-        let user1 = User(id: 1, name: "User 1")
         let auction = Auction(description: "Playstation 5")
-        auction.purpose(value: Throw(user1, 550.00))
+        auction.purpose(value: Throw(userOne, 550.00))
         
-        let auctioner = Evaluator()
-        auctioner.evaluate(auction: auction)
+        try? auctioner.evaluate(auction: auction)
         
         XCTAssertEqual(auctioner.greaterThrow(), auctioner.leastThrow())
         
     }
     
     func testCouldFindThreeBiggestThrows() {
-        let user1 = User(id: 1, name: "User One")
-        let user2 = User(id: 2, name: "User Two")
-        let user3 = User(id: 3, name: "User Three")
-        
         let auction = Auction(description: "Playstation 5")
-        auction.purpose(value: Throw(user1, 250.00))
-        auction.purpose(value: Throw(user2, 300.00))
-        auction.purpose(value: Throw(user3, 400.00))
-        auction.purpose(value: Throw(user1, 600.00))
+        auction.purpose(value: Throw(userOne, 250.00))
+        auction.purpose(value: Throw(userTwo, 300.00))
+        auction.purpose(value: Throw(userThree, 400.00))
+        auction.purpose(value: Throw(userOne, 600.00))
         
-        let auctioner = Evaluator()
-        auctioner.evaluate(auction: auction)
+        try? auctioner.evaluate(auction: auction)
         
         let throwsList = auctioner.threeBiggest()
         
@@ -74,5 +73,23 @@ class EvaluatorTests: XCTestCase {
         XCTAssertEqual(300, throwsList[2].value)
         
     }
-
+    
+    func testMustIgnoreAuctionWithoutBids() {
+        let auction = AuctionCreator().to(description: "Mega Drive").construct()
+        
+        XCTAssertThrowsError(try auctioner.evaluate(auction: auction), "Is not possible evaluate auctions without bids.") { (err) in
+            print(err.localizedDescription)
+        }
+    }
+    
+    private func initUsers(){
+        userOne = User(id: 1, name: "User One")
+        userTwo = User(id: 2, name: "User Two")
+        userThree = User(id: 3, name: "User Three")
+    }
+    
+    private func initEvaluator() {
+        auctioner = Evaluator()
+    }
+    
 }

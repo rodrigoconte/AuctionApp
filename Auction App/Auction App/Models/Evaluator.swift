@@ -7,13 +7,22 @@
 
 import Foundation
 
+enum ErrorEvaluator: Error {
+    case auctionWithoutBids(String)
+}
+
 class Evaluator {
     
     private var greaterOfAll = Double.leastNonzeroMagnitude
     private var leasterOfAll = Double.greatestFiniteMagnitude
     private var biggests: [Throw] = []
     
-    func evaluate(auction: Auction) {
+    func evaluate(auction: Auction) throws {
+        
+        if auction.throwsOfAuction?.count == 0 {
+            throw ErrorEvaluator.auctionWithoutBids("Was not possible evaluate an auction without bids.")
+        }
+        
         guard let allThrows = auction.throwsOfAuction else { return }
         
         for currentThrow in allThrows {
