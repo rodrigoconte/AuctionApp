@@ -20,13 +20,15 @@ class Auction {
     }
     
     func purpose(value throwsParam: Throw) {
-        
         guard let listOfBids = throwsOfAuction else { return }
-        
-        if listOfBids.count == 0 || listOfBids.last?.user != throwsParam.user{
+        if listOfBids.count == 0 || lastBid(listOfBids).user != throwsParam.user{
             throwsOfAuction?.append(throwsParam)
         }
-        
     }
+    
+    func lastBid(_ listOfBids: [Throw]) -> Throw {
+        return listOfBids[listOfBids.count - 1]
+    }
+    
     
 }
