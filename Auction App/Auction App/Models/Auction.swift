@@ -21,13 +21,29 @@ class Auction {
     
     func purpose(value throwsParam: Throw) {
         guard let listOfBids = throwsOfAuction else { return }
-        if listOfBids.count == 0 || lastBid(listOfBids).user != throwsParam.user{
+        
+        if listOfBids.count == 0 || canGiveBid(throwsParam.user, listOfBids) {
             throwsOfAuction?.append(throwsParam)
         }
     }
     
-    func lastBid(_ listOfBids: [Throw]) -> Throw {
+    private func canGiveBid(_ user: User, _ listOfBids: [Throw]) -> Bool{
+        return lastBid(listOfBids).user != user && quantityOfBidsFromSameUser(user) < 5
+    }
+    
+    private func lastBid(_ listOfBids: [Throw]) -> Throw {
         return listOfBids[listOfBids.count - 1]
+    }
+    
+    private func quantityOfBidsFromSameUser(_ user: User) -> Int {
+        guard let listOfBids = throwsOfAuction else { return 0 }
+        var total = 0
+        for bid in listOfBids {
+            if bid.user == user {
+                total += 1
+            }
+        }
+        return total
     }
     
     

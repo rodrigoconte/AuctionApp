@@ -54,5 +54,34 @@ class Auction_AppTests: XCTestCase {
         XCTAssertEqual(1, auction.throwsOfAuction?.count)
         XCTAssertEqual(2000.0, auction.throwsOfAuction?.first?.value)
     }
+    
+    func testMustIgnoreMoreThanFiveBidsFromSameUSer() {
+        
+        let auction = Auction(description: "Some samsung phone")
+        verifyEmptyAuction(auction)
+        
+        let userOne = User(name: "User One")
+        let userTwo = User(name: "User Two")
+        
+        auction.purpose(value: Throw(userOne, 2000.00))
+        auction.purpose(value: Throw(userTwo, 3000.00))
+        auction.purpose(value: Throw(userOne, 4000.00))
+        auction.purpose(value: Throw(userTwo, 5000.00))
+        auction.purpose(value: Throw(userOne, 6000.00))
+        auction.purpose(value: Throw(userTwo, 7000.00))
+        auction.purpose(value: Throw(userOne, 8000.00))
+        auction.purpose(value: Throw(userTwo, 9000.00))
+        auction.purpose(value: Throw(userOne, 10000.00))
+        auction.purpose(value: Throw(userTwo, 11000.00))
+        auction.purpose(value: Throw(userOne, 12000.00))
+        
+        XCTAssertEqual(10, auction.throwsOfAuction?.count)
+        XCTAssertEqual(11000, auction.throwsOfAuction?.last?.value)
+        
+    }
+    
+    private func verifyEmptyAuction(_ auction: Auction){
+        XCTAssertEqual(0, auction.throwsOfAuction?.count)
+    }
 
 }
